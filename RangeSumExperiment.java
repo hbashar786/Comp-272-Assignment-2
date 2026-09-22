@@ -36,8 +36,8 @@ public class RangeSumExperiment {
     /**
      * Constructs prefix sums and uses them to answer every query.
      */
-    public static long[] answerWithPrefixSums(
-            int[] values, int[][] queries) {
+    public static long[] answerWithPrefixSums(int[] values, int[][] queries) 
+    {
 
         long[] prefix = new long[values.length + 1];
 
@@ -63,8 +63,16 @@ public class RangeSumExperiment {
      * the elapsed time in nanoseconds. Only the algorithm call should be
      * inside the measured interval.
      */
-    public static long timeDirectOnce(int[] values, int[][] queries) {
-        return 0;
+    public static long timeDirectOnce(int[] values, int[][] queries) 
+    {
+
+        long start = System.nanoTime();
+        long[] response = answerDirectly(values, queries);
+        long finish = System.nanoTime();
+
+        resultSink = response[0];
+
+        return finish - start;
     }
 
     /**
@@ -74,8 +82,15 @@ public class RangeSumExperiment {
      * the elapsed time in nanoseconds. Only the algorithm call should be
      * inside the measured interval.
      */
-    public static long timePrefixOnce(int[] values, int[][] queries) {
-        return 0;
+    public static long timePrefixOnce(int[] values, int[][] queries) 
+    {
+        long start = System.nanoTime();
+        long[] response = answerWithPrefixSums(values, queries);
+        long finish = System.nanoTime();
+
+        resultSink = response[0];
+
+        return finish - start;
     }
 
     /**
@@ -84,9 +99,21 @@ public class RangeSumExperiment {
      * TODO: Run the algorithm repetitions times. Save one result from every
      * execution in resultSink so that the computed answer is used.
      */
-    public static long averageDirectTime(
-            int[] values, int[][] queries, int repetitions) {
-        return 0;
+    public static long averageDirectTime(int[] values, int[][] queries, int repetitions) 
+    {
+        long total = 0;
+
+        for(int run = 0; run < repetitions; run++)
+        {
+            long start = System.nanoTime();
+            long[] response = answerDirectly(values, queries);
+            long finish = System.nanoTime();
+
+            resultSink = response[0];
+            total += finish - start;
+        }
+
+        return total/repetitions;
     }
 
     /**
@@ -95,9 +122,22 @@ public class RangeSumExperiment {
      * TODO: Run the algorithm repetitions times. Save one result from every
      * execution in resultSink so that the computed answer is used.
      */
-    public static long averagePrefixTime(
-            int[] values, int[][] queries, int repetitions) {
-        return 0;
+    public static long averagePrefixTime(int[] values, int[][] queries, int repetitions) 
+    {
+        long total = 0;
+
+        for(int run = 0; run < repetitions; run++)
+        {
+            long start = System.nanoTime();
+            long[] response = answerWithPrefixSums(values, queries);
+            long finish = System.nanoTime();
+
+            resultSink = response[0];
+            
+            total += finish - start;
+        }
+
+        return total/repetitions;
     }
 
     /**
@@ -132,14 +172,14 @@ public class RangeSumExperiment {
      * Checks both algorithms on small, well-defined examples.
      */
     public static void runCorrectnessTests() {
-        int[] values = {4, 2, 7, 1, 6};
+        int[] values = { 4, 2, 7, 1, 6 };
         int[][] queries = {
-            {1, 3},
-            {0, 4},
-            {2, 2},
-            {3, 4}
+                { 1, 3 },
+                { 0, 4 },
+                { 2, 2 },
+                { 3, 4 }
         };
-        long[] expected = {10, 20, 7, 7};
+        long[] expected = { 10, 20, 7, 7 };
 
         long[] direct = answerDirectly(values, queries);
         long[] prefix = answerWithPrefixSums(values, queries);
@@ -161,7 +201,7 @@ public class RangeSumExperiment {
         runCorrectnessTests();
 
         /* For every experiment, q = n and every query spans n elements. */
-        int[] sizes = {500, 1_000, 2_000, 4_000, 8_000};
+        int[] sizes = { 500, 1_000, 2_000, 4_000, 8_000 };
         int repetitions = 5;
 
         System.out.println("Single-run experiment (nanoseconds)");
